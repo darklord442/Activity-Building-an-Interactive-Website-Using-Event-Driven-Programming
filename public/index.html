@@ -42,6 +42,27 @@
       font-style: italic;
     }
 
+    .live-status {
+      margin: 10px 0 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .live-status .online::before,
+    .live-status .offline::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 6px;
+      border-radius: 50%;
+      background: #3c8d3c;
+    }
+
+    .live-status .offline::before {
+      background: var(--burgundy);
+    }
+
     .divider {
       width: 160px;
       height: 2px;
@@ -295,6 +316,7 @@
   <header class="page-header">
     <h1 class="page-title">The Gilded Gavel Auction House</h1>
     <p class="tagline">Fine antiques &amp; collectibles &mdash; place your bid before the hammer falls</p>
+    <p class="live-status"><span id="connStatus" class="offline">Connecting...</span> &middot; <span id="watchers">0</span> watching</p>
     <div class="divider"></div>
   </header>
 
@@ -368,21 +390,14 @@
   </section>
 
   <script>
-    const MIN_INCREMENT = 10;
+    let ws = null;
+    let lots = [];
+    let minIncrement = 10;
+    let clockOffset = 0;
 
-    const lots = [
-      { id: 101, name: "Victorian Gold Pocket Watch", desc: "18k case, hand-engraved, c. 1885", category: "Jewelry", bid: 1200, bids: 7, minutes: 42 },
-      { id: 102, name: "Oil Painting: Harbor at Dusk", desc: "Signed, gilt frame, 24 x 36 in.", category: "Fine Art", bid: 3400, bids: 12, minutes: 95 },
-      { id: 103, name: "Ming-Style Porcelain Vase", desc: "Blue & white, 14 in. tall", category: "Ceramics", bid: 850, bids: 4, minutes: 18 },
-      { id: 104, name: "First Edition Novel", desc: "Clothbound, original dust jacket", category: "Books", bid: 620, bids: 5, minutes: 63 },
-      { id: 105, name: "Mid-Century Walnut Armchair", desc: "Restored upholstery, 1958", category: "Furniture", bid: 480, bids: 3, minutes: 7 },
-      { id: 106, name: "Rare Silver Coin Set", desc: "Six coins, presentation case", category: "Coins", bid: 950, bids: 9, minutes: 130 }
-    ];
-
-    const startTime = Date.now();
-    lots.forEach(function (lot) {
-      lot.endsAt = startTime + lot.minutes * 60 * 1000;
-    });
+    function serverNow() {
+      return Date.now() + clockOffset;
+    }
 
     function formatMoney(amount) {
       return "$" + amount.toLocaleString("en-US");
@@ -401,26 +416,53 @@
     }
 
     function isClosed(lot) {
-      return lot.endsAt - Date.now() <= 0;
+      return lot.endsAt - serverNow() <= 0;
+    }
+
+    function cell(className, text) {
+      const td = document.createElement("td");
+      if (className) {
+        td.className = className;
+      }
+      td.textContent = text;
+      return td;
+    }
+
+    function buildRow(lot) {
+      const row = document.createElement("tr");
+      row.dataset.lotId = lot.id;
+
+      const item = cell("item-name", lot.name);
+      const desc = document.createElement("span");
+      desc.className = "item-desc";
+      desc.textContent = lot.desc;
+      item.appendChild(desc);
+
+      const price = cell("price", formatMoney(lot.bid));
+      if (lot.highBidder) {
+        const bidder = document.createElement("span");
+        bidder.className = "item-desc";
+        bidder.textContent = "by " + lot.highBidder;
+        price.appendChild(bidder);
+      }
+
+      row.append(
+        cell("lot-no", "#" + lot.id),
+        item,
+        cell("", lot.category),
+        price,
+        cell("bid-count", String(lot.bids)),
+        cell("time-left", "")
+      );
+      return row;
     }
 
     function renderLots() {
       const tbody = document.getElementById("lotRows");
       tbody.innerHTML = "";
-
       lots.forEach(function (lot) {
-        const row = document.createElement("tr");
-        row.dataset.lotId = lot.id;
-        row.innerHTML =
-          '<td class="lot-no">#' + lot.id + "</td>" +
-          '<td class="item-name">' + lot.name + '<span class="item-desc">' + lot.desc + "</span></td>" +
-          "<td>" + lot.category + "</td>" +
-          '<td class="price">' + formatMoney(lot.bid) + "</td>" +
-          '<td class="bid-count">' + lot.bids + "</td>" +
-          '<td class="time-left"></td>';
-        tbody.appendChild(row);
+        tbody.appendChild(buildRow(lot));
       });
-
       updateTimers();
       searchTable();
     }
@@ -434,7 +476,7 @@
         const option = document.createElement("option");
         option.value = lot.id;
         option.disabled = isClosed(lot);
-        option.textContent = "#" + lot.id + " " + lot.name + " (min " + formatMoney(lot.bid + MIN_INCREMENT) + ")" + (option.disabled ? " - Sold" : "");
+        option.textContent = "#" + lot.id + " " + lot.name + " (min " + formatMoney(lot.bid + minIncrement) + ")" + (option.disabled ? " - Sold" : "");
         select.appendChild(option);
       });
 
@@ -444,17 +486,16 @@
     }
 
     function updateTimers() {
-      const rows = document.querySelectorAll("#lotRows tr");
       let anyJustClosed = false;
 
-      rows.forEach(function (row) {
+      document.querySelectorAll("#lotRows tr").forEach(function (row) {
         const lot = lots.find(function (l) { return String(l.id) === row.dataset.lotId; });
-        const cell = row.querySelector(".time-left");
-        const msLeft = lot.endsAt - Date.now();
+        const timeCell = row.querySelector(".time-left");
+        const msLeft = lot.endsAt - serverNow();
 
-        cell.textContent = formatTimeLeft(msLeft);
-        cell.classList.toggle("ending-soon", msLeft > 0 && msLeft < 10 * 60 * 1000);
-        cell.classList.toggle("sold", msLeft <= 0);
+        timeCell.textContent = formatTimeLeft(msLeft);
+        timeCell.classList.toggle("ending-soon", msLeft > 0 && msLeft < 10 * 60 * 1000);
+        timeCell.classList.toggle("sold", msLeft <= 0);
 
         if (msLeft <= 0 && !lot.closed) {
           lot.closed = true;
@@ -482,8 +523,8 @@
       const name = nameInput ? nameInput.value.trim() : "";
       const greeting =
         (name ? "Welcome, " + name + "!" : "Welcome to The Gilded Gavel!") +
-        "\n\nPick a lot, enter a bid at least " + formatMoney(MIN_INCREMENT) +
-        " above the current bid, and press Place Bid. The highest bid when the timer runs out wins.";
+        "\n\nPick a lot, enter a bid at least " + formatMoney(minIncrement) +
+        " above the current bid, and press Place Bid. Bids update live for everyone watching. The highest bid when the timer runs out wins.";
 
       if (typeof alert === "function") {
         alert(greeting);
@@ -515,7 +556,31 @@
       message.className = type;
     }
 
-    function addHistory(name, lot, amount) {
+    function historyText(entry) {
+      const time = new Date(entry.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      return time + " \u2014 " + entry.name + " bid " + formatMoney(entry.amount) + " on Lot #" + entry.lotId + " (" + entry.lotName + ")";
+    }
+
+    function renderHistory(entries) {
+      const list = document.getElementById("bidHistory");
+      list.innerHTML = "";
+
+      if (entries.length === 0) {
+        const empty = document.createElement("li");
+        empty.className = "empty";
+        empty.textContent = "No bids placed yet.";
+        list.appendChild(empty);
+        return;
+      }
+
+      entries.forEach(function (entry) {
+        const item = document.createElement("li");
+        item.textContent = historyText(entry);
+        list.appendChild(item);
+      });
+    }
+
+    function addHistory(entry) {
       const list = document.getElementById("bidHistory");
       const empty = list.querySelector(".empty");
       if (empty) {
@@ -523,9 +588,57 @@
       }
 
       const item = document.createElement("li");
-      const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      item.textContent = time + " \u2014 " + name + " bid " + formatMoney(amount) + " on Lot #" + lot.id + " (" + lot.name + ")";
+      item.textContent = historyText(entry);
       list.prepend(item);
+    }
+
+    function setConnection(text, online) {
+      const status = document.getElementById("connStatus");
+      status.textContent = text;
+      status.className = online ? "online" : "offline";
+    }
+
+    function handleMessage(event) {
+      const message = JSON.parse(event.data);
+
+      if (message.type === "init") {
+        clockOffset = message.serverTime - Date.now();
+        minIncrement = message.minIncrement;
+        lots = message.lots;
+        renderLots();
+        renderLotOptions();
+        renderHistory(message.history);
+      } else if (message.type === "bid") {
+        lots = lots.map(function (lot) { return lot.id === message.lot.id ? message.lot : lot; });
+        renderLots();
+        renderLotOptions();
+        addHistory(message.entry);
+        const row = document.querySelector('#lotRows tr[data-lot-id="' + message.lot.id + '"]');
+        if (row) {
+          row.classList.add("just-bid");
+        }
+      } else if (message.type === "bid-result") {
+        setMessage(message.message, message.ok ? "ok" : "error");
+        if (message.ok) {
+          document.getElementById("bidAmount").value = "";
+        }
+      } else if (message.type === "watchers") {
+        document.getElementById("watchers").textContent = message.count;
+      }
+    }
+
+    function connect() {
+      const protocol = location.protocol === "https:" ? "wss://" : "ws://";
+      ws = new WebSocket(protocol + location.host);
+
+      ws.addEventListener("open", function () {
+        setConnection("Live", true);
+      });
+      ws.addEventListener("message", handleMessage);
+      ws.addEventListener("close", function () {
+        setConnection("Reconnecting...", false);
+        setTimeout(connect, 2000);
+      });
     }
 
     function placeBid(event) {
@@ -534,42 +647,17 @@
       const name = document.getElementById("nameInput").value.trim();
       const amount = Number(document.getElementById("bidAmount").value);
       const lotId = Number(document.getElementById("lotSelect").value);
-      const lot = lots.find(function (l) { return l.id === lotId; });
 
       if (!name) {
         setMessage("Please enter your name before bidding.", "error");
         return;
       }
-      if (!lot) {
-        setMessage("Please choose a lot.", "error");
-        return;
-      }
-      if (isClosed(lot)) {
-        setMessage("Bidding on Lot #" + lot.id + " has closed.", "error");
-        return;
-      }
-      if (!Number.isInteger(amount)) {
-        setMessage("Please bid in whole dollars.", "error");
-        return;
-      }
-      if (amount < lot.bid + MIN_INCREMENT) {
-        setMessage("Your bid must be at least " + formatMoney(lot.bid + MIN_INCREMENT) + ".", "error");
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        setMessage("Not connected to the auction server. Retrying...", "error");
         return;
       }
 
-      lot.bid = amount;
-      lot.bids += 1;
-
-      renderLots();
-      renderLotOptions();
-      addHistory(name, lot, amount);
-      setMessage("Bid accepted! You are the highest bidder on Lot #" + lot.id + " at " + formatMoney(amount) + ".", "ok");
-      document.getElementById("bidAmount").value = "";
-
-      const row = document.querySelector('#lotRows tr[data-lot-id="' + lot.id + '"]');
-      if (row) {
-        row.classList.add("just-bid");
-      }
+      ws.send(JSON.stringify({ type: "bid", lotId: lotId, name: name, amount: amount }));
     }
 
     function updateInputColor(event) {
@@ -607,9 +695,8 @@
     }
 
     function init() {
-      renderLots();
-      renderLotOptions();
       attachInputListeners();
+      connect();
       setInterval(updateTimers, 1000);
     }
 

@@ -1,0 +1,17 @@
+{
+  "name": "gilded-gavel-auction",
+  "version": "1.0.0",
+  "description": "Real-time auction house built with Node.js, Express and WebSockets",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  }
+}
