@@ -2,7 +2,7 @@ const http = require("http");
 const path = require("path");
 const express = require("express");
 const { WebSocketServer, WebSocket } = require("ws");
-const { MIN_INCREMENT, MAX_HISTORY, createAuction, placeBid } = require("./auction");
+const { MIN_INCREMENT, MAX_HISTORY, MAX_CHAT, createAuction, placeBid, addChat } = require("./auction");
 
 function createServer(auction = createAuction()) {
   const app = express();
@@ -30,8 +30,10 @@ function createServer(auction = createAuction()) {
       type: "init",
       lots: auction.lots,
       history: auction.history,
+      chat: auction.chat,
       minIncrement: MIN_INCREMENT,
       maxHistory: MAX_HISTORY,
+      maxChat: MAX_CHAT,
       serverTime: Date.now()
     });
     broadcastWatchers();
@@ -42,6 +44,14 @@ function createServer(auction = createAuction()) {
         message = JSON.parse(raw);
       } catch {
         return send(socket, { type: "bid-result", ok: false, message: "Invalid message." });
+      }
+
+      if (message && message.type === "chat") {
+        const chat = addChat(auction, message);
+        if (!chat.ok) {
+          return send(socket, { type: "chat-result", ok: false, message: chat.error });
+        }
+        return broadcast({ type: "chat", entry: chat.entry });
       }
 
       if (!message || message.type !== "bid") {

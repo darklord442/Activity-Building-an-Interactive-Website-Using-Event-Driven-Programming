@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert");
-const { createAuction, placeBid } = require("../auction");
+const { createAuction, placeBid, addChat, MAX_CHAT } = require("../auction");
 
 const lots = [{ id: 1, name: "Vase", desc: "", category: "Ceramics", bid: 100, bids: 0, minutes: 10 }];
 
@@ -18,7 +18,7 @@ test("accepts a bid at the minimum increment and records history", () => {
 test("rejects invalid bids", () => {
   const auction = createAuction(lots, 0);
   const cases = [
-    [{ lotId: 1, name: "", amount: 200 }, /name/],
+    [{ lotId: 1, name: "", amount: 200 }, /name first/],
     [{ lotId: 99, name: "A", amount: 200 }, /choose a lot/],
     [{ lotId: 1, name: "A", amount: 109 }, /at least \$110/],
     [{ lotId: 1, name: "A", amount: 110.5 }, /whole dollars/],
@@ -39,4 +39,18 @@ test("rejects bids after the lot closes", () => {
 
   assert.strictEqual(result.ok, false);
   assert.match(result.error, /closed/);
+});
+
+test("adds chat messages, validates them, and keeps only the latest MAX_CHAT", () => {
+  const auction = createAuction(lots, 0);
+
+  assert.match(addChat(auction, { name: "", text: "hi" }).error, /name first/);
+  assert.match(addChat(auction, { name: "A", text: "   " }).error, /empty/);
+  assert.match(addChat(auction, { name: "A", text: "x".repeat(301) }).error, /300 characters/);
+
+  for (let i = 0; i < MAX_CHAT + 5; i++) {
+    assert.strictEqual(addChat(auction, { name: "A", text: "msg " + i }).ok, true);
+  }
+  assert.strictEqual(auction.chat.length, MAX_CHAT);
+  assert.strictEqual(auction.chat[auction.chat.length - 1].text, "msg " + (MAX_CHAT + 4));
 });

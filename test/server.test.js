@@ -65,3 +65,26 @@ test("ignores non-object JSON messages without crashing", async (t) => {
   client.send(JSON.stringify({ type: "bid", lotId: 0, name: "A", amount: 1 }));
   assert.strictEqual((await result).ok, false);
 });
+
+test("broadcasts chat messages to every client", async (t) => {
+  const server = createServer();
+  server.listen(0);
+  await once(server, "listening");
+  const url = "ws://localhost:" + server.address().port;
+  t.after(() => server.close());
+
+  const alice = new WebSocket(url);
+  const bob = new WebSocket(url);
+  t.after(() => { alice.close(); bob.close(); });
+  await Promise.all([nextMessage(alice, "init"), nextMessage(bob, "init")]);
+
+  const bobSees = nextMessage(bob, "chat");
+  alice.send(JSON.stringify({ type: "chat", name: "Alice", text: "Good luck everyone!" }));
+  const { entry } = await bobSees;
+  assert.strictEqual(entry.name, "Alice");
+  assert.strictEqual(entry.text, "Good luck everyone!");
+
+  const rejected = nextMessage(alice, "chat-result");
+  alice.send(JSON.stringify({ type: "chat", name: "Alice", text: "" }));
+  assert.strictEqual((await rejected).ok, false);
+});

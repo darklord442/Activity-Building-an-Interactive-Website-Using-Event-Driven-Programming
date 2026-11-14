@@ -37,7 +37,7 @@
     }
 
     .container {
-      max-width: 1080px;
+      max-width: 1180px;
       margin: 0 auto;
       padding: 0 24px 56px;
     }
@@ -102,12 +102,12 @@
     }
 
     .hero {
-      padding: 32px 0 8px;
+      padding: 20px 0 4px;
     }
 
     .page-title {
       margin: 0;
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: clamp(1.8rem, 3.6vw, 2.6rem);
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.1;
@@ -121,26 +121,8 @@
     }
 
     .tagline {
-      margin: 12px 0 0;
+      margin: 10px 0 0;
       color: var(--muted);
-      font-size: 1.05rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 180px 180px 1fr;
-      gap: 16px;
-      margin: 32px 0;
-    }
-
-    @media (max-width: 760px) {
-      .grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .bid-box {
-        grid-column: 1 / -1;
-      }
     }
 
     .box {
@@ -150,13 +132,161 @@
       background: var(--surface);
     }
 
-    .center-box {
+    .featured {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 20px;
+      margin: 28px 0 0;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .featured,
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Item picture container */
+    .showcase {
+      padding: 0;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+    }
+
+    .image-frame {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      background: radial-gradient(circle at center, #ffffff 0%, #e9e9ef 100%);
+      display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+    }
+
+    .image-frame img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: opacity 0.25s ease, transform 0.4s ease;
+    }
+
+    .image-frame:hover img {
+      transform: scale(1.04);
+    }
+
+    .image-frame img.loading {
+      opacity: 0;
+    }
+
+    .badge {
+      position: absolute;
+      top: 14px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      backdrop-filter: blur(6px);
+    }
+
+    .badge-lot {
+      left: 14px;
+      background: rgba(11, 13, 20, 0.75);
+      color: #fff;
+    }
+
+    .badge-timer {
+      right: 14px;
+      background: rgba(11, 13, 20, 0.75);
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .badge-timer.ending-soon {
+      background: rgba(245, 158, 11, 0.9);
+      color: #1a1205;
+    }
+
+    .badge-timer.sold {
+      background: rgba(139, 145, 167, 0.9);
+    }
+
+    .showcase-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .showcase-info h2 {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    .showcase-info .meta {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .showcase-price {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .showcase-price .label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .showcase-price .amount {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .showcase-price .by {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* Bid panel */
+    .bid-box {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .bid-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .bid-head h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .bid-tools {
+      display: flex;
+      align-items: center;
       gap: 10px;
-      text-align: center;
     }
 
     .gavel {
@@ -165,30 +295,22 @@
       transition: width 0.2s ease, height 0.2s ease;
     }
 
-    .caption {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    #bidForm {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    #bidForm label {
+    label,
+    .field-label {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 600;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
 
-    #bidForm .full {
-      grid-column: 1 / -1;
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
     input,
@@ -227,7 +349,7 @@
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
-      transition: transform 0.1s ease, filter 0.15s ease;
+      transition: transform 0.1s ease, filter 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
     }
 
     button:hover {
@@ -239,43 +361,95 @@
     }
 
     .secondary {
+      padding: 8px 12px;
       background: var(--surface-2);
       border: 1px solid var(--border);
+      font-size: 0.85rem;
     }
 
-    #bidMessage {
-      grid-column: 1 / -1;
+    /* Raise cards */
+    .raise-cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .raise-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 10px 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .raise-card:hover {
+      border-color: rgba(139, 92, 246, 0.6);
+      filter: none;
+    }
+
+    .raise-card .step {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .raise-card .total {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .raise-card.active {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(236, 72, 153, 0.2));
+      border-color: var(--accent);
+    }
+
+    .raise-card.active .total {
+      color: var(--text);
+    }
+
+    #placeBidButton {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 1rem;
+    }
+
+    .form-message {
       margin: 0;
       min-height: 1.2em;
       font-size: 0.9rem;
     }
 
-    #bidMessage.ok {
+    .form-message.ok {
       color: var(--success);
     }
 
-    #bidMessage.error {
+    .form-message.error {
       color: var(--danger);
     }
 
+    /* Sections */
     .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin: 40px 0 16px;
+      margin: 36px 0 14px;
       flex-wrap: wrap;
     }
 
     h2 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 700;
       letter-spacing: -0.01em;
     }
 
     #myInput {
-      width: 280px;
+      width: 240px;
       max-width: 100%;
     }
 
@@ -291,7 +465,7 @@
 
     #lots th,
     #lots td {
-      padding: 16px 20px;
+      padding: 12px 16px;
       text-align: left;
       border-bottom: 1px solid var(--border);
     }
@@ -305,20 +479,35 @@
     }
 
     #lots tbody tr {
+      cursor: pointer;
       transition: background-color 0.15s ease;
     }
 
     #lots tbody tr:hover {
-      background-color: rgba(255, 255, 255, 0.02);
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    #lots tbody tr.selected {
+      background-color: rgba(139, 92, 246, 0.12);
     }
 
     #lots tr:last-child td {
       border-bottom: none;
     }
 
-    .lot-no {
-      color: var(--muted);
-      font-variant-numeric: tabular-nums;
+    .item-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .thumb {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: #fff;
+      object-fit: contain;
     }
 
     .item-name {
@@ -357,8 +546,93 @@
     }
 
     @keyframes flash {
-      from { background-color: rgba(139, 92, 246, 0.25); }
+      from { background-color: rgba(139, 92, 246, 0.3); }
       to { background-color: transparent; }
+    }
+
+    /* Live chat */
+    .side {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-box {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      height: 420px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      list-style: none;
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-messages li {
+      max-width: 90%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      font-size: 0.9rem;
+      line-height: 1.35;
+      word-wrap: break-word;
+    }
+
+    .chat-messages li.mine {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(236, 72, 153, 0.28));
+    }
+
+    .chat-messages li.system {
+      align-self: center;
+      max-width: 100%;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .chat-messages .who {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 2px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #c4b5fd;
+    }
+
+    .chat-messages .when {
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .chat-messages .empty {
+      align-self: center;
+      background: transparent;
+      color: var(--muted);
+    }
+
+    #chatForm {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    #chatForm button {
+      padding: 10px 16px;
+    }
+
+    #chatMessage {
+      padding: 0 14px 10px;
+      font-size: 0.8rem;
     }
 
     .history {
@@ -368,9 +642,9 @@
     }
 
     .history li {
-      padding: 12px 0;
+      padding: 10px 0;
       border-bottom: 1px solid var(--border);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
     }
 
     .history li:first-child {
@@ -385,6 +659,17 @@
     .history .empty {
       color: var(--muted);
     }
+
+    .credits {
+      margin-top: 40px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .credits a {
+      color: inherit;
+    }
   </style>
 </head>
 <body>
@@ -396,82 +681,136 @@
 
     <header class="hero">
       <h1 class="page-title">Live auctions, <span class="gradient">in real time.</span></h1>
-      <p class="tagline">Bid on modern collectibles. Every bid updates instantly for everyone watching.</p>
+      <p class="tagline">Bid on iconic collectibles. Every bid and chat message updates instantly for everyone watching.</p>
     </header>
 
-    <div class="grid">
-      <div class="box center-box">
-        <button id="welcomeButton" class="secondary">How it works</button>
-      </div>
-
-      <div class="box center-box">
-        <svg id="gavel" class="gavel" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Auction gavel">
-          <path d="m14.5 12.5-8 8a2.12 2.12 0 1 1-3-3l8-8" />
-          <path d="m16 16 6-6" />
-          <path d="m8 8 6-6" />
-          <path d="m9 7 8 8" />
-          <path d="m21 11-8-8" />
-        </svg>
-        <span class="caption">Hover me</span>
+    <section class="featured">
+      <div class="box showcase">
+        <div class="image-frame">
+          <img id="lotImage" alt="" />
+          <span id="lotBadge" class="badge badge-lot"></span>
+          <span id="lotTimer" class="badge badge-timer"></span>
+        </div>
+        <div class="showcase-info">
+          <div>
+            <h2 id="lotName">Loading lots...</h2>
+            <p id="lotMeta" class="meta"></p>
+          </div>
+          <div class="showcase-price">
+            <div class="label">Current bid</div>
+            <div id="lotPrice" class="amount">$0</div>
+            <div id="lotBidder" class="by"></div>
+          </div>
+        </div>
       </div>
 
       <div class="box bid-box">
-        <form id="bidForm" novalidate>
-          <label>
-            Your name
-            <input type="text" id="nameInput" name="nameInput" autocomplete="name" placeholder="e.g. Prince" />
-          </label>
+        <div class="bid-head">
+          <h3>Place a bid</h3>
+          <div class="bid-tools">
+            <svg id="gavel" class="gavel" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Auction gavel">
+              <title>Hover me</title>
+              <path d="m14.5 12.5-8 8a2.12 2.12 0 1 1-3-3l8-8" />
+              <path d="m16 16 6-6" />
+              <path d="m8 8 6-6" />
+              <path d="m9 7 8 8" />
+              <path d="m21 11-8-8" />
+            </svg>
+            <button id="welcomeButton" class="secondary" type="button">How it works</button>
+          </div>
+        </div>
+
+        <form id="bidForm" class="bid-box" novalidate>
+          <div class="two-col">
+            <label>
+              Your name
+              <input type="text" id="nameInput" name="nameInput" autocomplete="name" placeholder="e.g. Prince" maxlength="40" />
+            </label>
+            <label>
+              Lot
+              <select id="lotSelect" name="lotSelect"></select>
+            </label>
+          </div>
+
+          <div class="field-label">
+            Quick raise
+            <div id="raiseCards" class="raise-cards"></div>
+          </div>
+
           <label>
             Your bid ($)
             <input type="number" id="bidAmount" name="bidAmount" min="1" step="1" placeholder="0" />
           </label>
-          <label class="full">
-            Lot
-            <select id="lotSelect" name="lotSelect"></select>
-          </label>
-          <button type="submit" class="full">Place bid</button>
-          <p id="bidMessage" role="status" aria-live="polite"></p>
+
+          <button type="submit" id="placeBidButton">Place bid</button>
+          <p id="bidMessage" class="form-message" role="status" aria-live="polite"></p>
         </form>
       </div>
+    </section>
+
+    <div class="main-grid">
+      <div>
+        <div class="section-head">
+          <h2>Live lots</h2>
+          <input type="text" id="myInput" placeholder="Search lots or categories..." title="Search lots" />
+        </div>
+
+        <div class="box table-box">
+          <table id="lots">
+            <thead>
+              <tr class="header">
+                <th>Item</th>
+                <th style="width:16%;">Category</th>
+                <th style="width:16%;">Current bid</th>
+                <th style="width:9%;">Bids</th>
+                <th style="width:16%;">Time left</th>
+              </tr>
+            </thead>
+            <tbody id="lotRows"></tbody>
+          </table>
+        </div>
+
+        <div class="section-head">
+          <h2>Recent bids</h2>
+        </div>
+        <div class="box">
+          <ul id="bidHistory" class="history">
+            <li class="empty">No bids placed yet.</li>
+          </ul>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="section-head">
+          <h2>Live chat</h2>
+        </div>
+        <div class="box chat-box">
+          <ul id="chatMessages" class="chat-messages" aria-live="polite">
+            <li class="empty">No messages yet. Say hi!</li>
+          </ul>
+          <p id="chatMessage" class="form-message" role="status"></p>
+          <form id="chatForm" novalidate>
+            <input type="text" id="chatInput" placeholder="Type a message..." maxlength="300" autocomplete="off" />
+            <button type="submit">Send</button>
+          </form>
+        </div>
+      </aside>
     </div>
 
-    <div class="section-head">
-      <h2>Live lots</h2>
-      <input type="text" id="myInput" placeholder="Search lots or categories..." title="Search lots" />
-    </div>
-
-    <div class="box table-box">
-      <table id="lots">
-        <thead>
-          <tr class="header">
-            <th style="width:8%;">Lot</th>
-            <th>Item</th>
-            <th style="width:14%;">Category</th>
-            <th style="width:15%;">Current bid</th>
-            <th style="width:8%;">Bids</th>
-            <th style="width:14%;">Time left</th>
-          </tr>
-        </thead>
-        <tbody id="lotRows"></tbody>
-      </table>
-    </div>
-
-    <div class="section-head">
-      <h2>Recent bids</h2>
-    </div>
-    <div class="box">
-      <ul id="bidHistory" class="history">
-        <li class="empty">No bids placed yet.</li>
-      </ul>
-    </div>
+    <p class="credits">Item photos from Wikimedia Commons &mdash; see <a href="images/CREDITS.md">image credits</a>.</p>
   </div>
 
   <script>
+    const RAISE_STEPS = [10, 50, 100, 500, 1000];
+
     let ws = null;
     let lots = [];
     let minIncrement = 10;
     let maxHistory = 20;
+    let maxChat = 50;
     let clockOffset = 0;
+    let selectedLotId = null;
+    let activeRaise = null;
 
     function serverNow() {
       return Date.now() + clockOffset;
@@ -479,6 +818,10 @@
 
     function formatMoney(amount) {
       return "$" + amount.toLocaleString("en-US");
+    }
+
+    function formatTime(at) {
+      return new Date(at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
     function formatTimeLeft(ms) {
@@ -497,40 +840,58 @@
       return lot.endsAt - serverNow() <= 0;
     }
 
-    function cell(className, text) {
-      const td = document.createElement("td");
-      if (className) {
-        td.className = className;
-      }
-      td.textContent = text;
-      return td;
+    function getLot(id) {
+      return lots.find(function (l) { return l.id === Number(id); });
     }
 
+    function selectedLot() {
+      return getLot(selectedLotId);
+    }
+
+    function myName() {
+      return document.getElementById("nameInput").value.trim();
+    }
+
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) {
+        node.className = className;
+      }
+      if (text !== undefined) {
+        node.textContent = text;
+      }
+      return node;
+    }
+
+    /* ---------- Lots table ---------- */
+
     function buildRow(lot) {
-      const row = document.createElement("tr");
+      const row = el("tr");
       row.dataset.lotId = lot.id;
+      row.classList.toggle("selected", lot.id === selectedLotId);
 
-      const item = cell("item-name", lot.name);
-      const desc = document.createElement("span");
-      desc.className = "item-desc";
-      desc.textContent = lot.desc;
-      item.appendChild(desc);
+      const itemTd = el("td");
+      const itemCell = el("div", "item-cell");
+      const thumb = el("img", "thumb");
+      thumb.src = lot.image;
+      thumb.alt = "";
+      thumb.loading = "lazy";
+      const text = el("div", "item-name", lot.name);
+      text.appendChild(el("span", "item-desc", "Lot #" + lot.id + " · " + lot.desc));
+      itemCell.append(thumb, text);
+      itemTd.appendChild(itemCell);
 
-      const price = cell("price", formatMoney(lot.bid));
+      const price = el("td", "price", formatMoney(lot.bid));
       if (lot.highBidder) {
-        const bidder = document.createElement("span");
-        bidder.className = "item-desc";
-        bidder.textContent = "by " + lot.highBidder;
-        price.appendChild(bidder);
+        price.appendChild(el("span", "item-desc", "by " + lot.highBidder));
       }
 
       row.append(
-        cell("lot-no", "#" + lot.id),
-        item,
-        cell("", lot.category),
+        itemTd,
+        el("td", "", lot.category),
         price,
-        cell("bid-count", String(lot.bids)),
-        cell("time-left", "")
+        el("td", "bid-count", String(lot.bids)),
+        el("td", "time-left", "")
       );
       return row;
     }
@@ -547,27 +908,93 @@
 
     function renderLotOptions() {
       const select = document.getElementById("lotSelect");
-      const current = select.value;
       select.innerHTML = "";
 
       lots.forEach(function (lot) {
-        const option = document.createElement("option");
+        const option = el("option");
         option.value = lot.id;
         option.disabled = isClosed(lot);
-        option.textContent = "#" + lot.id + " " + lot.name + " (min " + formatMoney(lot.bid + minIncrement) + ")" + (option.disabled ? " - Sold" : "");
+        option.textContent = "#" + lot.id + " " + lot.name + (option.disabled ? " (Sold)" : "");
         select.appendChild(option);
       });
 
-      if (current) {
-        select.value = current;
+      if (selectedLotId !== null) {
+        select.value = selectedLotId;
       }
     }
+
+    /* ---------- Featured lot (picture container) ---------- */
+
+    function renderShowcase() {
+      const lot = selectedLot();
+      if (!lot) {
+        return;
+      }
+
+      const img = document.getElementById("lotImage");
+      if (img.getAttribute("src") !== lot.image) {
+        img.classList.add("loading");
+        img.onload = function () { img.classList.remove("loading"); };
+        img.src = lot.image;
+      }
+      img.alt = lot.name;
+
+      document.getElementById("lotBadge").textContent = "Lot #" + lot.id + " · " + lot.category;
+      document.getElementById("lotName").textContent = lot.name;
+      document.getElementById("lotMeta").textContent = lot.desc + " · " + lot.bids + " bids";
+      document.getElementById("lotPrice").textContent = formatMoney(lot.bid);
+      document.getElementById("lotBidder").textContent = lot.highBidder ? "Highest bidder: " + lot.highBidder : "No bids yet this session";
+      updateTimers();
+    }
+
+    function selectLot(id) {
+      selectedLotId = Number(id);
+      activeRaise = null;
+      document.getElementById("lotSelect").value = selectedLotId;
+      document.getElementById("bidAmount").value = "";
+      document.querySelectorAll("#lotRows tr").forEach(function (row) {
+        row.classList.toggle("selected", Number(row.dataset.lotId) === selectedLotId);
+      });
+      renderShowcase();
+      renderRaiseCards();
+    }
+
+    /* ---------- Quick raise cards ---------- */
+
+    function renderRaiseCards() {
+      const container = document.getElementById("raiseCards");
+      const lot = selectedLot();
+      container.innerHTML = "";
+
+      RAISE_STEPS.forEach(function (step) {
+        const card = el("button", "raise-card");
+        card.type = "button";
+        card.dataset.step = step;
+        card.classList.toggle("active", step === activeRaise);
+        card.appendChild(el("span", "step", "+" + formatMoney(step)));
+        card.appendChild(el("span", "total", lot ? formatMoney(lot.bid + step) : ""));
+        card.disabled = !lot || isClosed(lot);
+        container.appendChild(card);
+      });
+    }
+
+    function applyRaise(step) {
+      const lot = selectedLot();
+      if (!lot) {
+        return;
+      }
+      activeRaise = step;
+      document.getElementById("bidAmount").value = lot.bid + step;
+      renderRaiseCards();
+    }
+
+    /* ---------- Timers ---------- */
 
     function updateTimers() {
       let anyJustClosed = false;
 
       document.querySelectorAll("#lotRows tr").forEach(function (row) {
-        const lot = lots.find(function (l) { return String(l.id) === row.dataset.lotId; });
+        const lot = getLot(row.dataset.lotId);
         const timeCell = row.querySelector(".time-left");
         const msLeft = lot.endsAt - serverNow();
 
@@ -581,14 +1008,26 @@
         }
       });
 
+      const lot = selectedLot();
+      if (lot) {
+        const badge = document.getElementById("lotTimer");
+        const msLeft = lot.endsAt - serverNow();
+        badge.textContent = msLeft > 0 ? "Ends in " + formatTimeLeft(msLeft) : "Sold";
+        badge.classList.toggle("ending-soon", msLeft > 0 && msLeft < 10 * 60 * 1000);
+        badge.classList.toggle("sold", msLeft <= 0);
+      }
+
       if (anyJustClosed) {
         renderLotOptions();
+        renderRaiseCards();
       }
     }
 
+    /* ---------- Activity event handlers ---------- */
+
     function bigImg(x) {
-      x.style.width = "64px";
-      x.style.height = "64px";
+      x.style.width = "48px";
+      x.style.height = "48px";
     }
 
     function normalImg(x) {
@@ -597,12 +1036,11 @@
     }
 
     function myFunction() {
-      const nameInput = document.getElementById("nameInput");
-      const name = nameInput ? nameInput.value.trim() : "";
+      const name = myName();
       const greeting =
         (name ? "Welcome, " + name + "!" : "Welcome to Bidly!") +
-        "\n\nPick a lot, enter a bid at least " + formatMoney(minIncrement) +
-        " above the current bid, and press Place Bid. Bids update live for everyone watching. The highest bid when the timer runs out wins.";
+        "\n\nPick a lot, tap a quick-raise card or type your own amount (at least " + formatMoney(minIncrement) +
+        " above the current bid), then press Place bid. Bids and chat update live for everyone watching. The highest bid when the timer runs out wins.";
 
       if (typeof alert === "function") {
         alert(greeting);
@@ -628,15 +1066,20 @@
       }
     }
 
-    function setMessage(text, type) {
-      const message = document.getElementById("bidMessage");
+    function updateInputColor(event) {
+      event.target.style.backgroundColor = event.type === "keydown" ? "rgba(139, 92, 246, 0.22)" : "rgba(236, 72, 153, 0.16)";
+    }
+
+    /* ---------- Recent bids ---------- */
+
+    function setMessage(id, text, type) {
+      const message = document.getElementById(id);
       message.textContent = text;
-      message.className = type;
+      message.className = "form-message " + (type || "");
     }
 
     function historyText(entry) {
-      const time = new Date(entry.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      return time + " \u2014 " + entry.name + " bid " + formatMoney(entry.amount) + " on Lot #" + entry.lotId + " (" + entry.lotName + ")";
+      return formatTime(entry.at) + " \u2014 " + entry.name + " bid " + formatMoney(entry.amount) + " on " + entry.lotName;
     }
 
     function renderHistory(entries) {
@@ -644,17 +1087,12 @@
       list.innerHTML = "";
 
       if (entries.length === 0) {
-        const empty = document.createElement("li");
-        empty.className = "empty";
-        empty.textContent = "No bids placed yet.";
-        list.appendChild(empty);
+        list.appendChild(el("li", "empty", "No bids placed yet."));
         return;
       }
 
       entries.forEach(function (entry) {
-        const item = document.createElement("li");
-        item.textContent = historyText(entry);
-        list.appendChild(item);
+        list.appendChild(el("li", "", historyText(entry)));
       });
     }
 
@@ -665,14 +1103,80 @@
         empty.remove();
       }
 
-      const item = document.createElement("li");
-      item.textContent = historyText(entry);
-      list.prepend(item);
+      list.prepend(el("li", "", historyText(entry)));
 
       while (list.children.length > maxHistory) {
         list.lastElementChild.remove();
       }
     }
+
+    /* ---------- Live chat ---------- */
+
+    function appendChatItem(item) {
+      const list = document.getElementById("chatMessages");
+      const empty = list.querySelector(".empty");
+      if (empty) {
+        empty.remove();
+      }
+
+      const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 60;
+      list.appendChild(item);
+
+      while (list.children.length > maxChat) {
+        list.firstElementChild.remove();
+      }
+
+      if (nearBottom) {
+        list.scrollTop = list.scrollHeight;
+      }
+    }
+
+    function addChatMessage(entry) {
+      const item = el("li", entry.name === myName() ? "mine" : "");
+      const who = el("div", "who", entry.name);
+      who.appendChild(el("span", "when", formatTime(entry.at)));
+      item.append(who, document.createTextNode(entry.text));
+      appendChatItem(item);
+    }
+
+    function addChatSystem(text) {
+      appendChatItem(el("li", "system", text));
+    }
+
+    function renderChat(entries) {
+      const list = document.getElementById("chatMessages");
+      list.innerHTML = "";
+      if (entries.length === 0) {
+        list.appendChild(el("li", "empty", "No messages yet. Say hi!"));
+        return;
+      }
+      entries.forEach(addChatMessage);
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function sendChat(event) {
+      event.preventDefault();
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+
+      if (!myName()) {
+        setMessage("chatMessage", "Enter your name in the bid panel to chat.", "error");
+        return;
+      }
+      if (!text) {
+        return;
+      }
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        setMessage("chatMessage", "Not connected. Retrying...", "error");
+        return;
+      }
+
+      ws.send(JSON.stringify({ type: "chat", name: myName(), text: text }));
+      input.value = "";
+      setMessage("chatMessage", "", "");
+    }
+
+    /* ---------- WebSocket ---------- */
 
     function setConnection(text, online) {
       const status = document.getElementById("connStatus");
@@ -687,24 +1191,42 @@
         clockOffset = message.serverTime - Date.now();
         minIncrement = message.minIncrement;
         maxHistory = message.maxHistory;
+        maxChat = message.maxChat;
         lots = message.lots;
+        if (!getLot(selectedLotId)) {
+          const firstOpen = lots.find(function (l) { return !isClosed(l); }) || lots[0];
+          selectedLotId = firstOpen.id;
+        }
         renderLots();
         renderLotOptions();
+        renderShowcase();
+        renderRaiseCards();
         renderHistory(message.history);
+        renderChat(message.chat);
       } else if (message.type === "bid") {
         lots = lots.map(function (lot) { return lot.id === message.lot.id ? message.lot : lot; });
+        if (message.lot.id === selectedLotId) {
+          activeRaise = null;
+        }
         renderLots();
         renderLotOptions();
+        renderShowcase();
+        renderRaiseCards();
         addHistory(message.entry);
+        addChatSystem(message.entry.name + " bid " + formatMoney(message.entry.amount) + " on " + message.entry.lotName);
         const row = document.querySelector('#lotRows tr[data-lot-id="' + message.lot.id + '"]');
         if (row) {
           row.classList.add("just-bid");
         }
       } else if (message.type === "bid-result") {
-        setMessage(message.message, message.ok ? "ok" : "error");
+        setMessage("bidMessage", message.message, message.ok ? "ok" : "error");
         if (message.ok) {
           document.getElementById("bidAmount").value = "";
         }
+      } else if (message.type === "chat") {
+        addChatMessage(message.entry);
+      } else if (message.type === "chat-result") {
+        setMessage("chatMessage", message.message, "error");
       } else if (message.type === "watchers") {
         document.getElementById("watchers").textContent = message.count;
       }
@@ -727,54 +1249,57 @@
     function placeBid(event) {
       event.preventDefault();
 
-      const name = document.getElementById("nameInput").value.trim();
+      const name = myName();
       const amount = Number(document.getElementById("bidAmount").value);
-      const lotId = Number(document.getElementById("lotSelect").value);
 
       if (!name) {
-        setMessage("Please enter your name before bidding.", "error");
+        setMessage("bidMessage", "Please enter your name before bidding.", "error");
         return;
       }
       if (!ws || ws.readyState !== WebSocket.OPEN) {
-        setMessage("Not connected to the auction server. Retrying...", "error");
+        setMessage("bidMessage", "Not connected to the auction server. Retrying...", "error");
         return;
       }
 
-      ws.send(JSON.stringify({ type: "bid", lotId: lotId, name: name, amount: amount }));
-    }
-
-    function updateInputColor(event) {
-      event.target.style.backgroundColor = event.type === "keydown" ? "rgba(139, 92, 246, 0.22)" : "rgba(236, 72, 153, 0.16)";
+      ws.send(JSON.stringify({ type: "bid", lotId: selectedLotId, name: name, amount: amount }));
     }
 
     function attachInputListeners() {
       const nameInput = document.getElementById("nameInput");
-      const searchInput = document.getElementById("myInput");
-      const form = document.getElementById("bidForm");
       const gavel = document.getElementById("gavel");
-      const welcomeButton = document.getElementById("welcomeButton");
 
-      if (nameInput) {
-        nameInput.addEventListener("keydown", updateInputColor);
-        nameInput.addEventListener("keyup", updateInputColor);
-      }
+      nameInput.addEventListener("keydown", updateInputColor);
+      nameInput.addEventListener("keyup", updateInputColor);
 
-      if (searchInput) {
-        searchInput.addEventListener("keyup", searchTable);
-      }
+      document.getElementById("myInput").addEventListener("keyup", searchTable);
+      gavel.addEventListener("mouseover", function () { bigImg(gavel); });
+      gavel.addEventListener("mouseout", function () { normalImg(gavel); });
+      document.getElementById("welcomeButton").addEventListener("click", myFunction);
+      document.getElementById("bidForm").addEventListener("submit", placeBid);
+      document.getElementById("chatForm").addEventListener("submit", sendChat);
 
-      if (gavel) {
-        gavel.addEventListener("mouseover", function () { bigImg(gavel); });
-        gavel.addEventListener("mouseout", function () { normalImg(gavel); });
-      }
+      document.getElementById("lotSelect").addEventListener("change", function (event) {
+        selectLot(event.target.value);
+      });
 
-      if (welcomeButton) {
-        welcomeButton.addEventListener("click", myFunction);
-      }
+      document.getElementById("lotRows").addEventListener("click", function (event) {
+        const row = event.target.closest("tr");
+        if (row) {
+          selectLot(row.dataset.lotId);
+        }
+      });
 
-      if (form) {
-        form.addEventListener("submit", placeBid);
-      }
+      document.getElementById("raiseCards").addEventListener("click", function (event) {
+        const card = event.target.closest(".raise-card");
+        if (card && !card.disabled) {
+          applyRaise(Number(card.dataset.step));
+        }
+      });
+
+      document.getElementById("bidAmount").addEventListener("input", function () {
+        activeRaise = null;
+        renderRaiseCards();
+      });
     }
 
     function init() {
