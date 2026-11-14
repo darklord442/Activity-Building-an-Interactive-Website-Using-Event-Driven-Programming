@@ -548,7 +548,11 @@
         setMessage("Bidding on Lot #" + lot.id + " has closed.", "error");
         return;
       }
-      if (!Number.isFinite(amount) || amount < lot.bid + MIN_INCREMENT) {
+      if (!Number.isInteger(amount)) {
+        setMessage("Please bid in whole dollars.", "error");
+        return;
+      }
+      if (amount < lot.bid + MIN_INCREMENT) {
         setMessage("Your bid must be at least " + formatMoney(lot.bid + MIN_INCREMENT) + ".", "error");
         return;
       }
