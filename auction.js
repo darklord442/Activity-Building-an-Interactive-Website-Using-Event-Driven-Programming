@@ -3,12 +3,12 @@ const MAX_NAME_LENGTH = 40;
 const MAX_HISTORY = 20;
 
 const DEFAULT_LOTS = [
-  { id: 101, name: "Victorian Gold Pocket Watch", desc: "18k case, hand-engraved, c. 1885", category: "Jewelry", bid: 1200, bids: 7, minutes: 42 },
-  { id: 102, name: "Oil Painting: Harbor at Dusk", desc: "Signed, gilt frame, 24 x 36 in.", category: "Fine Art", bid: 3400, bids: 12, minutes: 95 },
-  { id: 103, name: "Ming-Style Porcelain Vase", desc: "Blue & white, 14 in. tall", category: "Ceramics", bid: 850, bids: 4, minutes: 18 },
-  { id: 104, name: "First Edition Novel", desc: "Clothbound, original dust jacket", category: "Books", bid: 620, bids: 5, minutes: 63 },
-  { id: 105, name: "Mid-Century Walnut Armchair", desc: "Restored upholstery, 1958", category: "Furniture", bid: 480, bids: 3, minutes: 7 },
-  { id: 106, name: "Rare Silver Coin Set", desc: "Six coins, presentation case", category: "Coins", bid: 950, bids: 9, minutes: 130 }
+  { id: 101, name: "Rolex Submariner Date", desc: "41mm, 2023, full box & papers", category: "Watches", bid: 9800, bids: 7, minutes: 42 },
+  { id: 102, name: "Air Jordan 1 \"Chicago\" (Signed)", desc: "Size 10, authenticated autograph", category: "Sneakers", bid: 2400, bids: 12, minutes: 95 },
+  { id: 103, name: "Leica M6 Film Camera", desc: "Black chrome, 35mm Summicron lens", category: "Cameras", bid: 3100, bids: 4, minutes: 18 },
+  { id: 104, name: "Daft Punk Signed Vinyl", desc: "Random Access Memories, 2LP", category: "Music", bid: 650, bids: 5, minutes: 63 },
+  { id: 105, name: "KAWS Companion Figure", desc: "Grey colorway, sealed, 2019", category: "Art Toys", bid: 1200, bids: 3, minutes: 7 },
+  { id: 106, name: "Charizard 1st Edition PSA 9", desc: "Base Set holo, graded", category: "Trading Cards", bid: 15000, bids: 9, minutes: 130 }
 ];
 
 function createAuction(lots = DEFAULT_LOTS, now = Date.now()) {

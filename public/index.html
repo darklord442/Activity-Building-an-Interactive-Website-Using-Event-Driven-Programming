@@ -3,49 +3,85 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Gilded Gavel Auction House</title>
+  <title>Bidly — Live Auctions</title>
   <style>
     :root {
-      --cream: #fbf6ec;
-      --paper: #fffdf8;
-      --ink: #2b2118;
-      --muted: #7a6a58;
-      --gold: #b8892f;
-      --gold-dark: #8c6420;
-      --burgundy: #6e1f2b;
-      --line: #e6d9c2;
+      --bg: #0b0d14;
+      --surface: #131722;
+      --surface-2: #1a1f2e;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e8eaf2;
+      --muted: #8b91a7;
+      --accent: #8b5cf6;
+      --accent-2: #ec4899;
+      --success: #22c55e;
+      --danger: #f43f5e;
+      --warning: #f59e0b;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
-      font-family: Georgia, "Times New Roman", serif;
       margin: 0;
-      padding: 40px 20px 40px;
-      background: radial-gradient(circle at top, #fffaf0 0%, var(--cream) 60%, #f1e6d2 100%);
-      color: var(--ink);
+      min-height: 100vh;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background:
+        radial-gradient(800px 400px at 10% -10%, rgba(139, 92, 246, 0.18), transparent 60%),
+        radial-gradient(700px 400px at 100% 0%, rgba(236, 72, 153, 0.12), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
     }
 
-    .page-header {
-      text-align: center;
-      margin-bottom: 10px;
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px 56px;
     }
 
-    .page-title {
-      margin: 0;
-      font-size: 2.4rem;
-      letter-spacing: 1px;
-      color: var(--burgundy);
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
     }
 
-    .tagline {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-style: italic;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
     }
 
     .live-status {
-      margin: 10px 0 0;
-      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      font-size: 0.82rem;
       color: var(--muted);
+    }
+
+    .live-status .online,
+    .live-status .offline {
+      color: var(--text);
+      font-weight: 600;
     }
 
     .live-status .online::before,
@@ -56,76 +92,99 @@
       height: 8px;
       margin-right: 6px;
       border-radius: 50%;
-      background: #3c8d3c;
+      background: var(--success);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
     }
 
     .live-status .offline::before {
-      background: var(--burgundy);
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.18);
     }
 
-    .divider {
-      width: 160px;
-      height: 2px;
-      margin: 16px auto 0;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    .hero {
+      padding: 32px 0 8px;
     }
 
-    .row {
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin: 30px auto;
-      max-width: 1000px;
+    .page-title {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .page-title .gradient {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .tagline {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 180px 180px 1fr;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .bid-box {
+        grid-column: 1 / -1;
+      }
     }
 
     .box {
-      padding: 16px 18px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: var(--paper);
-      box-shadow: 0 3px 10px rgba(80, 55, 20, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
     }
 
-    .gavel-box {
-      min-width: 120px;
+    .center-box {
+      display: flex;
       flex-direction: column;
-      gap: 6px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-align: center;
     }
 
     .gavel {
+      color: var(--accent);
       cursor: pointer;
-      transition: width 0.15s ease, height 0.15s ease;
-      user-select: none;
+      transition: width 0.2s ease, height 0.2s ease;
     }
 
-    .gavel-caption {
+    .caption {
       font-size: 0.8rem;
       color: var(--muted);
-    }
-
-    .bid-box {
-      flex: 1;
-      min-width: 320px;
     }
 
     #bidForm {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      width: 100%;
+      gap: 12px;
     }
 
     #bidForm label {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      font-size: 0.85rem;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
       color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     #bidForm .full {
@@ -135,45 +194,53 @@
     input,
     select {
       width: 100%;
-      padding: 8px 10px;
-      box-sizing: border-box;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background-color: #fffaf1;
-      color: var(--ink);
-      font-family: inherit;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background-color: var(--surface-2);
+      color: var(--text);
+      font: inherit;
       font-size: 0.95rem;
+      text-transform: none;
+      letter-spacing: normal;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input::placeholder {
+      color: #5d6378;
     }
 
     input:focus,
     select:focus {
-      outline: 2px solid rgba(184, 137, 47, 0.35);
-      border-color: var(--gold);
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
     }
 
     button {
-      background-color: var(--burgundy);
-      color: #fff8e8;
+      padding: 12px 18px;
       border: none;
-      border-radius: 6px;
-      padding: 10px 16px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      font: inherit;
+      font-weight: 600;
       cursor: pointer;
-      font-family: inherit;
-      font-size: 0.95rem;
-      letter-spacing: 0.5px;
       white-space: nowrap;
+      transition: transform 0.1s ease, filter 0.15s ease;
     }
 
     button:hover {
-      background-color: #4f1520;
+      filter: brightness(1.1);
+    }
+
+    button:active {
+      transform: scale(0.98);
     }
 
     .secondary {
-      background-color: var(--gold);
-    }
-
-    .secondary:hover {
-      background-color: var(--gold-dark);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
     }
 
     #bidMessage {
@@ -184,31 +251,32 @@
     }
 
     #bidMessage.ok {
-      color: #2f6b2f;
+      color: var(--success);
     }
 
     #bidMessage.error {
-      color: var(--burgundy);
+      color: var(--danger);
     }
 
-    .catalogue {
+    .section-head {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin: 20px auto;
-      max-width: 1000px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 40px 0 16px;
+      flex-wrap: wrap;
     }
 
-    .catalogue h2 {
+    h2 {
       margin: 0;
-      color: var(--burgundy);
-      font-size: 1.4rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
     }
 
-    .search-box,
-    .table-box {
-      width: 100%;
-      box-sizing: border-box;
+    #myInput {
+      width: 280px;
+      max-width: 100%;
     }
 
     .table-box {
@@ -223,18 +291,25 @@
 
     #lots th,
     #lots td {
-      padding: 12px 14px;
+      padding: 16px 20px;
       text-align: left;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--border);
     }
 
     #lots .header th {
-      background-color: #f3e7cf;
-      color: var(--ink);
-      font-weight: normal;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 600;
       text-transform: uppercase;
-      font-size: 0.78rem;
-      letter-spacing: 1px;
+      letter-spacing: 0.06em;
+    }
+
+    #lots tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    #lots tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
     }
 
     #lots tr:last-child td {
@@ -242,38 +317,39 @@
     }
 
     .lot-no {
-      color: var(--gold-dark);
-      font-weight: bold;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
     }
 
     .item-name {
-      font-weight: bold;
+      font-weight: 600;
     }
 
     .item-desc {
       display: block;
-      font-size: 0.82rem;
+      margin-top: 2px;
+      font-size: 0.8rem;
+      font-weight: 400;
       color: var(--muted);
-      font-weight: normal;
     }
 
     .price {
+      font-weight: 700;
       font-variant-numeric: tabular-nums;
-      font-weight: bold;
     }
 
     .time-left {
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
 
-    .ending-soon {
-      color: var(--burgundy);
-      font-weight: bold;
+    td.ending-soon {
+      color: var(--warning);
+      font-weight: 600;
     }
 
-    .sold {
+    td.sold {
       color: var(--muted);
-      font-style: italic;
     }
 
     tr.just-bid td {
@@ -281,7 +357,7 @@
     }
 
     @keyframes flash {
-      from { background-color: #f7e2a8; }
+      from { background-color: rgba(139, 92, 246, 0.25); }
       to { background-color: transparent; }
     }
 
@@ -289,80 +365,79 @@
       list-style: none;
       margin: 0;
       padding: 0;
-      width: 100%;
     }
 
     .history li {
-      padding: 8px 0;
-      border-bottom: 1px dashed var(--line);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
       font-size: 0.92rem;
     }
 
+    .history li:first-child {
+      padding-top: 0;
+    }
+
     .history li:last-child {
+      padding-bottom: 0;
       border-bottom: none;
     }
 
     .history .empty {
       color: var(--muted);
-      font-style: italic;
-    }
-
-    .history-box {
-      justify-content: flex-start;
     }
   </style>
 </head>
 <body>
-  <header class="page-header">
-    <h1 class="page-title">The Gilded Gavel Auction House</h1>
-    <p class="tagline">Fine antiques &amp; collectibles &mdash; place your bid before the hammer falls</p>
-    <p class="live-status"><span id="connStatus" class="offline">Connecting...</span> &middot; <span id="watchers">0</span> watching</p>
-    <div class="divider"></div>
-  </header>
+  <div class="container">
+    <nav class="navbar">
+      <div class="brand"><span class="brand-mark"></span>Bidly</div>
+      <p class="live-status"><span id="connStatus" class="offline">Connecting...</span> <span><span id="watchers">0</span> watching</span></p>
+    </nav>
 
-  <div class="row">
-    <div class="box">
-      <button id="welcomeButton" class="secondary">How it works</button>
+    <header class="hero">
+      <h1 class="page-title">Live auctions, <span class="gradient">in real time.</span></h1>
+      <p class="tagline">Bid on modern collectibles. Every bid updates instantly for everyone watching.</p>
+    </header>
+
+    <div class="grid">
+      <div class="box center-box">
+        <button id="welcomeButton" class="secondary">How it works</button>
+      </div>
+
+      <div class="box center-box">
+        <svg id="gavel" class="gavel" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Auction gavel">
+          <path d="m14.5 12.5-8 8a2.12 2.12 0 1 1-3-3l8-8" />
+          <path d="m16 16 6-6" />
+          <path d="m8 8 6-6" />
+          <path d="m9 7 8 8" />
+          <path d="m21 11-8-8" />
+        </svg>
+        <span class="caption">Hover me</span>
+      </div>
+
+      <div class="box bid-box">
+        <form id="bidForm" novalidate>
+          <label>
+            Your name
+            <input type="text" id="nameInput" name="nameInput" autocomplete="name" placeholder="e.g. Prince" />
+          </label>
+          <label>
+            Your bid ($)
+            <input type="number" id="bidAmount" name="bidAmount" min="1" step="1" placeholder="0" />
+          </label>
+          <label class="full">
+            Lot
+            <select id="lotSelect" name="lotSelect"></select>
+          </label>
+          <button type="submit" class="full">Place bid</button>
+          <p id="bidMessage" role="status" aria-live="polite"></p>
+        </form>
+      </div>
     </div>
 
-    <div class="box gavel-box">
-      <svg id="gavel" class="gavel" width="32" height="32" viewBox="0 0 64 64" role="img" aria-label="Auction gavel">
-        <g transform="rotate(-40 32 32)">
-          <rect x="14" y="10" width="30" height="16" rx="3" fill="#6e1f2b" />
-          <rect x="10" y="12" width="6" height="12" rx="2" fill="#b8892f" />
-          <rect x="42" y="12" width="6" height="12" rx="2" fill="#b8892f" />
-          <rect x="26" y="24" width="6" height="32" rx="3" fill="#8c6420" />
-        </g>
-        <rect x="34" y="54" width="26" height="6" rx="2" fill="#b8892f" />
-      </svg>
-      <span class="gavel-caption">Hover the gavel</span>
-    </div>
-
-    <div class="box bid-box">
-      <form id="bidForm" novalidate>
-        <label>
-          Your name
-          <input type="text" id="nameInput" name="nameInput" autocomplete="name" />
-        </label>
-        <label>
-          Your bid ($)
-          <input type="number" id="bidAmount" name="bidAmount" min="1" step="1" />
-        </label>
-        <label class="full">
-          Lot
-          <select id="lotSelect" name="lotSelect"></select>
-        </label>
-        <button type="submit" class="full">Place Bid</button>
-        <p id="bidMessage" role="status" aria-live="polite"></p>
-      </form>
-    </div>
-  </div>
-
-  <section class="catalogue">
-    <h2>Lot Catalogue</h2>
-
-    <div class="box search-box">
-      <input type="text" id="myInput" placeholder="Search lots by name or category..." title="Search lots" />
+    <div class="section-head">
+      <h2>Live lots</h2>
+      <input type="text" id="myInput" placeholder="Search lots or categories..." title="Search lots" />
     </div>
 
     <div class="box table-box">
@@ -372,22 +447,24 @@
             <th style="width:8%;">Lot</th>
             <th>Item</th>
             <th style="width:14%;">Category</th>
-            <th style="width:14%;">Current Bid</th>
+            <th style="width:15%;">Current bid</th>
             <th style="width:8%;">Bids</th>
-            <th style="width:14%;">Time Left</th>
+            <th style="width:14%;">Time left</th>
           </tr>
         </thead>
         <tbody id="lotRows"></tbody>
       </table>
     </div>
 
-    <h2>Recent Bids</h2>
-    <div class="box history-box">
+    <div class="section-head">
+      <h2>Recent bids</h2>
+    </div>
+    <div class="box">
       <ul id="bidHistory" class="history">
         <li class="empty">No bids placed yet.</li>
       </ul>
     </div>
-  </section>
+  </div>
 
   <script>
     let ws = null;
@@ -522,7 +599,7 @@
       const nameInput = document.getElementById("nameInput");
       const name = nameInput ? nameInput.value.trim() : "";
       const greeting =
-        (name ? "Welcome, " + name + "!" : "Welcome to The Gilded Gavel!") +
+        (name ? "Welcome, " + name + "!" : "Welcome to Bidly!") +
         "\n\nPick a lot, enter a bid at least " + formatMoney(minIncrement) +
         " above the current bid, and press Place Bid. Bids update live for everyone watching. The highest bid when the timer runs out wins.";
 
@@ -661,7 +738,7 @@
     }
 
     function updateInputColor(event) {
-      event.target.style.backgroundColor = event.type === "keydown" ? "#f7e2a8" : "#fbeaea";
+      event.target.style.backgroundColor = event.type === "keydown" ? "rgba(139, 92, 246, 0.22)" : "rgba(236, 72, 153, 0.16)";
     }
 
     function attachInputListeners() {

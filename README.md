@@ -1,4 +1,4 @@
-# The Gilded Gavel Auction House
+# Bidly — Live Auctions
 
 Real-time auction web app built with **Node.js**, **Express** and **WebSockets** (`ws`).
 

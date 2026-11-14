@@ -69,7 +69,7 @@ function createServer(auction = createAuction()) {
 if (require.main === module) {
   const port = Number(process.env.PORT) || 3000;
   createServer().listen(port, () => {
-    console.log("Gilded Gavel auction running at http://localhost:" + port);
+    console.log("Bidly auction running at http://localhost:" + port);
   });
 }
 

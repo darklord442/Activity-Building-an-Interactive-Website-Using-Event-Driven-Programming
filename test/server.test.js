@@ -25,7 +25,7 @@ test("serves the page and broadcasts accepted bids to every client", async (t) =
 
   const page = await fetch(url + "/");
   assert.strictEqual(page.status, 200);
-  assert.match(await page.text(), /Gilded Gavel/);
+  assert.match(await page.text(), /Bidly/);
 
   const alice = new WebSocket(url.replace("http", "ws"));
   const bob = new WebSocket(url.replace("http", "ws"));
