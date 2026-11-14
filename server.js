@@ -43,7 +43,7 @@ function createServer(auction = createAuction()) {
         return send(socket, { type: "bid-result", ok: false, message: "Invalid message." });
       }
 
-      if (message.type !== "bid") {
+      if (!message || message.type !== "bid") {
         return;
       }
 

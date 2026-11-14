@@ -47,3 +47,21 @@ test("serves the page and broadcasts accepted bids to every client", async (t) =
   bob.send(JSON.stringify({ type: "bid", lotId: lot.id, name: "Bob", amount: lot.bid + 10 }));
   assert.strictEqual((await rejected).ok, false);
 });
+
+test("ignores non-object JSON messages without crashing", async (t) => {
+  const server = createServer();
+  server.listen(0);
+  await once(server, "listening");
+  const url = "ws://localhost:" + server.address().port;
+  t.after(() => server.close());
+
+  const client = new WebSocket(url);
+  t.after(() => client.close());
+  await nextMessage(client, "init");
+
+  client.send("null");
+  client.send("42");
+  const result = nextMessage(client, "bid-result");
+  client.send(JSON.stringify({ type: "bid", lotId: 0, name: "A", amount: 1 }));
+  assert.strictEqual((await result).ok, false);
+});
