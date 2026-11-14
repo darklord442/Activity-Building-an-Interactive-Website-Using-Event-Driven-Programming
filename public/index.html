@@ -470,6 +470,7 @@
     let ws = null;
     let lots = [];
     let minIncrement = 10;
+    let maxHistory = 20;
     let clockOffset = 0;
 
     function serverNow() {
@@ -667,6 +668,10 @@
       const item = document.createElement("li");
       item.textContent = historyText(entry);
       list.prepend(item);
+
+      while (list.children.length > maxHistory) {
+        list.lastElementChild.remove();
+      }
     }
 
     function setConnection(text, online) {
@@ -681,6 +686,7 @@
       if (message.type === "init") {
         clockOffset = message.serverTime - Date.now();
         minIncrement = message.minIncrement;
+        maxHistory = message.maxHistory;
         lots = message.lots;
         renderLots();
         renderLotOptions();

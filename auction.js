@@ -57,4 +57,4 @@ function placeBid(auction, { lotId, name, amount }, now = Date.now()) {
   return { ok: true, lot, entry };
 }
 
-module.exports = { MIN_INCREMENT, DEFAULT_LOTS, createAuction, placeBid };
+module.exports = { MIN_INCREMENT, MAX_HISTORY, DEFAULT_LOTS, createAuction, placeBid };

@@ -2,7 +2,7 @@ const http = require("http");
 const path = require("path");
 const express = require("express");
 const { WebSocketServer, WebSocket } = require("ws");
-const { MIN_INCREMENT, createAuction, placeBid } = require("./auction");
+const { MIN_INCREMENT, MAX_HISTORY, createAuction, placeBid } = require("./auction");
 
 function createServer(auction = createAuction()) {
   const app = express();
@@ -31,6 +31,7 @@ function createServer(auction = createAuction()) {
       lots: auction.lots,
       history: auction.history,
       minIncrement: MIN_INCREMENT,
+      maxHistory: MAX_HISTORY,
       serverTime: Date.now()
     });
     broadcastWatchers();
